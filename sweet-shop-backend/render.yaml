@@ -1,20 +1,31 @@
+# This is the master Blueprint for the entire Pal Hotel project on Render
+
 services:
+  # Service 1: The PostgreSQL Database
+  - type: psql
+    name: pal-hotel-db
+    plan: free
+
+  # Service 2: The Java Web Service
   - type: web
     name: pal-hotel-api
-    env: java
+    env: java  # This explicitly tells Render to use a Java environment
     plan: free
     buildCommand: "./mvnw package"
     startCommand: "java -jar target/sweet-shop-backend-0.0.1-SNAPSHOT.jar"
     envVars:
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
+        fromService:
+          type: psql
           name: pal-hotel-db
           property: internalUrl
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
+        fromService:
+          type: psql
           name: pal-hotel-db
           property: user
       - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
+        fromService:
+          type: psql
           name: pal-hotel-db
           property: password
